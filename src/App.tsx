@@ -1,28 +1,17 @@
-import { useState, useEffect } from 'react'
 import './App.css'
+import { useGame } from './contexts/GameContext'
 
 function App() {
-  const [word, setWord] = useState<string>('')
-  const [attempts, setAttempts] = useState<number>(0)
-  const [allowedTries] = useState<number>(15)
-  const [foundLetters, setFoundLetters] = useState<string[]>([])
-  const [hasWon, setHasWon] = useState<boolean>(false)
+  const { word, attempts, allowedTries, foundLetters, hasWon, guessLetter, resetGame } = useGame()
 
-  useEffect(() => {
-    fetch('http://localhost:3333/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        locale: 'fr-FR'
-      })
-    })
-      .then((response: Response) => response.json())
-      .then((data: { word: string }) => setWord(data.word))
-      .catch((error) => console.error(error))
-  }, [])
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const input = e.currentTarget.elements.namedItem('letter') as HTMLInputElement;
 
+    guessLetter(input.value.toLowerCase())
+
+    input.value = ''
+  }
   return (
     <>
       <h1>Le Pendu</h1>
@@ -32,36 +21,13 @@ function App() {
           <span key={i}>{foundLetters.includes(char.toLocaleLowerCase()) ? char : '_ '}</span>
         ))}
       </div>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const input = e.currentTarget.elements.namedItem('letter') as HTMLInputElement;
-        let letter = input.value.toLowerCase();
-        if (letter.length > 1 && letter === word.toLowerCase()) {
-          const wordGuessed = letter
-          wordGuessed.split('').map((char) => (
-            setFoundLetters(prev => [...prev, char])
-          ))
-          setHasWon(true)
-        } else if (letter.length > 1 && letter != word.toLowerCase()) {
-          setAttempts(prev => prev + 3)
-        } else {
-          if (letter && !foundLetters.includes(letter)) {
-            setFoundLetters(prev => [...prev, letter]);
-            if (!word.toLowerCase().includes(letter)) {
-              setAttempts(prev => prev + 1)
-            }
-            const newFoundLetters = [...foundLetters, letter]
-            setFoundLetters(newFoundLetters);
-
-            if (word.toLowerCase().split('').every(char => newFoundLetters.includes(char))) {
-              setHasWon(true)
-            }
-          }
-        }
-        input.value = '';
-      }}>
+      <form onSubmit={handleSubmit}>
         <input type="text" name='letter' maxLength={word.length} required autoComplete='off' disabled={attempts >= allowedTries || hasWon} />
-        <button type='submit' disabled={attempts >= allowedTries || hasWon}>Valider</button>
+        { hasWon === true || attempts >= allowedTries ? (
+          <button onClick={resetGame}>Recommencer</button>
+        ) : (
+          <button type='submit' disabled={attempts >= allowedTries || hasWon}>Valider</button>
+        )}
       </form>
       {hasWon && (
         <p>VOUS AVEZ GAGNé!!!!!</p>

@@ -8,6 +8,7 @@ interface GameContextType {
     hasWon: boolean,
     guessLetter: (letter: string) => void,
     resetGame: () => void
+    streak: number
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -15,7 +16,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined)
 export function GameProvider({ children }: { children: ReactNode }) {
     const [word, setWord] = useState<string>('')
     const [attempts, setAttempts] = useState<number>(0)
-    const [allowedTries] = useState<number>(15)
+    const [allowedTries] = useState<number>(9)
     const [foundLetters, setFoundLetters] = useState<string[]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
     const [streak, setStreak] = useState<number>(0)

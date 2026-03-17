@@ -6,7 +6,7 @@ import { useGame } from './contexts/GameContext'
 const KEYBOARD_ROWS = [
   ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['q', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm'],
-  ['w', 'x', 'c', 'v', 'b', 'n', '-']
+  ['w', 'x', 'c', 'v', 'b', 'n', '-', 'é', 'è']
 ]
 
 function HangmanDrawing({ mistakes, maxMistakes }: { mistakes: number, maxMistakes: number }) {
@@ -53,7 +53,7 @@ function HangmanDrawing({ mistakes, maxMistakes }: { mistakes: number, maxMistak
 }
 
 function App() {
-  const { word, attempts, allowedTries, foundLetters, hasWon, guessLetter, resetGame } = useGame()
+  const { word, attempts, allowedTries, foundLetters, hasWon, guessLetter, resetGame, streak } = useGame()
 
   const mistakes = attempts;
   const maxMistakes = allowedTries;
@@ -93,7 +93,8 @@ function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (hasWon || mistakes >= maxMistakes) return;
       const key = e.key.toLowerCase();
-      if (/^[a-z-]$/.test(key)) {
+      // accept accents
+      if (/^[a-z-éè]$/.test(key)) {
         guessLetter(key);
       }
     };
@@ -123,6 +124,12 @@ function App() {
         <h1>Le Pendu</h1>
         <div className="glass-panel" style={{ width: '100%', maxWidth: '48rem' }}>
           <div className="stats-container">
+            <div className="stat-badge">
+              <span>Streak :</span>
+              <span style={{color: 'var(--primary)'}}>
+                {streak}
+              </span>
+            </div>
             <div className="stat-badge">
               <span>Lettres :</span>
               <span style={{color: 'var(--primary)'}}>

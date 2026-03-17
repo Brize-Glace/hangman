@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+//import { useStreak } from "./StreakContext";
 
 interface GameContextType {
     word: string,
@@ -10,6 +11,8 @@ interface GameContextType {
     resetGame: () => void,
     streak: number,
     spendStreak: (amount: number) => boolean
+    shieldActive : boolean;
+    activateShield: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -21,6 +24,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const [foundLetters, setFoundLetters] = useState<string[]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
     const [streak, setStreak] = useState<number>(0)
+    const [shieldActive, setShieldActive] = useState<boolean>(false)
+
+    const activateShield = () => setShieldActive(true)
 
     const spendStreak = (amount: number) => {
         if (streak >= amount) {
@@ -63,9 +69,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
             setAttempts(newAttempts)
 
             if (newAttempts >= allowedTries) {
-                const newStreak = 0
-                setStreak(newStreak)
-                console.log(`❌ Streak perdu: ${streak}`)
+                if (shieldActive) {
+                    console.log("Bouclier activé")
+                    setShieldActive(false)
+                    setAttempts(allowedTries - 1)
+                    setStreak(streak)
+                    resetGame()
+                } else {
+                    const newStreak = 0
+                    setStreak(newStreak)
+                    console.log(`❌ Streak perdu: ${newStreak}`)
+                }
             }
         } else {
             if (letter && !foundLetters.includes(letter)) {
@@ -84,9 +98,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
                     setStreak(newStreak)
                     console.log(`🔥 Streak en cours: ${newStreak}`)
                 } else if (newAttempts >= allowedTries) {
-                    const newStreak = 0
-                    setStreak(newStreak)
-                    console.log(`❌ Streak perdu: ${streak}`)
+                    if (shieldActive) {
+                        console.log("Bouclier activé")
+                        setShieldActive(false)
+                        setAttempts(allowedTries - 1)
+                        setStreak(streak)
+                        resetGame()
+                    } else {
+                        const newStreak = 0
+                        setStreak(newStreak)
+                        console.log(`❌ Streak perdu: ${streak}`)
+                    }
                 }
             }
         }
@@ -96,6 +118,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setAttempts(0)
         setFoundLetters([])
         setHasWon(false)
+        setShieldActive(false)
         initGame()
     };
 
@@ -103,12 +126,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
         word,
         attempts,
         allowedTries,
+        setAttempts,
         foundLetters,
         hasWon,
         guessLetter,
         resetGame,
         streak,
-        spendStreak
+        spendStreak,
+        shieldActive,
+        activateShield
     }
 
     return (

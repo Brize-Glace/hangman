@@ -4,7 +4,7 @@ import { useStreak } from '../contexts/StreakContext'
 import { SHOP_ITEMS } from '../constants/shop'
 
 export function Shop() {
-  const { streak, word, foundLetters, guessLetter } = useGame();
+  const { streak, word, foundLetters, guessLetter, allowedTries, shieldActive, activateShield } = useGame();
   const { buyItem, userItems, useItem } = useStreak();
 
   const handleUseHint = () => {
@@ -17,15 +17,22 @@ export function Shop() {
     useItem('hint_letter'); // Consomme l'item
   }
 
+  const handleUseShield = () => {
+    if(shieldActive) return;
+    activateShield();
+    useItem('shield');
+  }
+
   const handleUseItem = (itemId: string) => {
       switch(itemId) {
           case 'hint_letter':
               handleUseHint();
               break;
-          case 'extra_life':
-              // handleUseExtraLife(); 
-              break;
+          // case 'extra_life':
+          //     handleUseExtraLife(); 
+          //     break;
           case 'shield':
+              handleUseShield();
               break;
           default:
               console.log("Item inconnu");

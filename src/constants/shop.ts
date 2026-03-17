@@ -7,6 +7,6 @@ export type ShopItem = {
 
 export const SHOP_ITEMS: ShopItem[] = [
     {id: 'hint_letter', name: 'Indice', description: 'Révèle une lettre au hasard', cost: 1},
-    {id: 'extra_life', name: 'Vie supplémentaire', description: 'Ajoute un essai supplémentaire', cost: 2},
-    {id: 'shield', name: 'Bouclier', description: 'Protège contre une erreur', cost: 3},
+    //{id: 'extra_life', name: 'Vie supplémentaire', description: 'Ajoute un essai supplémentaire', cost: 1},
+    {id: 'shield', name: 'Bouclier', description: 'Protège contre une erreur', cost: 1},
 ]

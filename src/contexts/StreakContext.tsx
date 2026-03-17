@@ -12,7 +12,6 @@ interface StreakContextType {
     userItems: string[],
 }
 
-// recuperer les streak depuis @GameContext.tsx
 export const StreakContext = createContext<StreakContextType | undefined>(undefined);
 
 export function StreakProvider({ children }: { children: ReactNode }) {

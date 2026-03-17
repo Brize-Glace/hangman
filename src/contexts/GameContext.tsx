@@ -167,7 +167,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     )
 }
 
-//ASTUCE: Créer un hook perso pour éviter d'importer useContext partout
 export function useGame() {
     const context = useContext(GameContext)
     if (!context) {

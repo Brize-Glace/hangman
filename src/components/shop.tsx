@@ -8,8 +8,7 @@ export function Shop() {
   const { buyItem, userItems, useItem } = useStreak();
 
   const handleUseHint = () => {
-    // Plus besoin de vérifier `hasHintItem` ici car le bouton "Utiliser"
-    // ne sera affiché que si on possède l'item !
+
     const unrevealedLetters = word.split('').filter(char => !foundLetters.includes(char.toLowerCase()));
     if (unrevealedLetters.length === 0) return;
     const randomLetter = unrevealedLetters[Math.floor(Math.random() * unrevealedLetters.length)];

@@ -61,7 +61,6 @@ function App() {
   const maxMistakes = allowedTries;
   
 
-  // Effects
   useEffect(() => {
     if (hasWon) {
       const duration = 3 * 1000;
@@ -91,7 +90,6 @@ function App() {
     }
   }, [hasWon]);
 
-  // Physical keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (hasWon || mistakes >= maxMistakes) return;
@@ -106,7 +104,7 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [guessLetter, hasWon, mistakes, maxMistakes]);
 
-  // Shake effect
+
   useEffect(() => {
     if (mistakes > 0 && mistakes < maxMistakes && !hasWon) {
       document.body.classList.remove('shake-animation');

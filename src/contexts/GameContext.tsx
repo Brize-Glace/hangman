@@ -18,6 +18,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const [allowedTries] = useState<number>(15)
     const [foundLetters, setFoundLetters] = useState<string[]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
+    const [streak, setStreak] = useState<number>(0)
 
     const initGame = () => {
         fetch('http://localhost:3333/', {
@@ -44,19 +45,38 @@ export function GameProvider({ children }: { children: ReactNode }) {
             wordGuessed.split('').forEach((char) => (
                 setFoundLetters(prev => [...prev, char])))
             setHasWon(true)
+            const newStreak = streak + 1
+            setStreak(newStreak)
+            console.log(`🔥 Streak en cours: ${newStreak}`)
         } else if (letter.length > 1 && letter != word.toLowerCase()) {
-            setAttempts(prev => prev + 3)
+            const newAttempts = attempts + 3
+            setAttempts(newAttempts)
+
+            if (newAttempts >= allowedTries) {
+                const newStreak = 0
+                setStreak(newStreak)
+                console.log(`❌ Streak perdu: ${streak}`)
+            }
         } else {
             if (letter && !foundLetters.includes(letter)) {
+                let newAttempts = attempts + 1
                 setFoundLetters(prev => [...prev, letter]);
                 if (!word.toLowerCase().includes(letter)) {
-                    setAttempts(prev => prev + 1)
+                    newAttempts = attempts + 1
+                    setAttempts(newAttempts)
                 }
                 const newFoundLetters = [...foundLetters, letter]
                 setFoundLetters(newFoundLetters);
 
                 if (word.toLowerCase().split('').every(char => newFoundLetters.includes(char))) {
                     setHasWon(true)
+                    const newStreak = streak + 1
+                    setStreak(newStreak)
+                    console.log(`🔥 Streak en cours: ${newStreak}`)
+                } else if (newAttempts >= allowedTries) {
+                    const newStreak = 0
+                    setStreak(newStreak)
+                    console.log(`❌ Streak perdu: ${streak}`)
                 }
             }
         }
@@ -76,7 +96,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         foundLetters,
         hasWon,
         guessLetter,
-        resetGame
+        resetGame,
+        streak
     }
 
     return (

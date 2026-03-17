@@ -37,7 +37,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
 
     const initGame = () => {
-        fetch('http://localhost:3333/', {
+        fetch('https://hangman.alexischarp.fr/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

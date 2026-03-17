@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import './App.css'
 import { useGame } from './contexts/GameContext'
+import { Shop } from './components/shop'
+
 
 const KEYBOARD_ROWS = [
   ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
@@ -57,6 +59,7 @@ function App() {
 
   const mistakes = attempts;
   const maxMistakes = allowedTries;
+  
 
   // Effects
   useEffect(() => {
@@ -194,6 +197,7 @@ function App() {
             </div>
           )}
         </div>
+        <Shop />
       </div>
     </>
   )

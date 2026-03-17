@@ -7,8 +7,9 @@ interface GameContextType {
     foundLetters: string[],
     hasWon: boolean,
     guessLetter: (letter: string) => void,
-    resetGame: () => void
-    streak: number
+    resetGame: () => void,
+    streak: number,
+    spendStreak: (amount: number) => boolean
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -20,6 +21,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const [foundLetters, setFoundLetters] = useState<string[]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
     const [streak, setStreak] = useState<number>(0)
+
+    const spendStreak = (amount: number) => {
+        if (streak >= amount) {
+            setStreak(streak - amount)
+            return true
+        }
+        return false
+    }
 
     const initGame = () => {
         fetch('http://localhost:3333/', {
@@ -98,7 +107,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         hasWon,
         guessLetter,
         resetGame,
-        streak
+        streak,
+        spendStreak
     }
 
     return (

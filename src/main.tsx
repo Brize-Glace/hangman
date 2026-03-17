@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { GameProvider } from './contexts/GameContext.tsx'
+import { StreakProvider } from './contexts/StreakContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <GameProvider>
-      <App />
+      <StreakProvider>
+        <App />
+      </StreakProvider>
     </GameProvider>
   </StrictMode>,
 )

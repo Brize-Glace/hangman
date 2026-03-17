@@ -13,6 +13,7 @@ interface GameContextType {
     spendStreak: (amount: number) => boolean
     shieldActive : boolean;
     activateShield: () => void;
+    isApiDown: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
@@ -25,8 +26,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const [hasWon, setHasWon] = useState<boolean>(false)
     const [streak, setStreak] = useState<number>(0)
     const [shieldActive, setShieldActive] = useState<boolean>(false)
+    const [isApiDown, setIsApiDown] = useState<boolean>(false)
 
     const activateShield = () => setShieldActive(true)
+
+    const fallbackWords = ['coq-au-vin', 'ordinateur', 'magique', 'hachis-parmentier', 'bolognaise', 'framework', 'composant', 'navigateur'];
+
+    const handleFallback = () => {
+        setIsApiDown(true)
+        const randomWord = fallbackWords[Math.floor(Math.random() * fallbackWords.length)]
+        setWord(randomWord)
+    }
 
     const spendStreak = (amount: number) => {
         if (streak >= amount) {
@@ -37,6 +47,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
 
     const initGame = () => {
+        setIsApiDown(false)
         fetch('https://hangman.alexischarp.fr/', {
             method: 'POST',
             headers: {
@@ -46,9 +57,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 locale: 'fr-FR'
             })
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('API response was not ok')
+                }
+                return res.json()
+            })
             .then(data => setWord(data.word))
-            .catch(error => console.error(error))
+            .catch(error => {
+                console.error("Erreur lors de l'appel à l'API:", error)
+                handleFallback()
+                console.log("Passage en mode fallback réussi")
+            })
     };
 
     useEffect(() => {
@@ -56,6 +76,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }, [])
 
     const guessLetter = (letter: string) => {
+        if (!word) return;
+
         if (letter.length > 1 && letter === word.toLocaleLowerCase()) {
             const wordGuessed = letter
             wordGuessed.split('').forEach((char) => (
@@ -134,7 +156,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         streak,
         spendStreak,
         shieldActive,
-        activateShield
+        activateShield,
+        isApiDown
     }
 
     return (

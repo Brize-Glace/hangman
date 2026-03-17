@@ -55,7 +55,7 @@ function HangmanDrawing({ mistakes, maxMistakes }: { mistakes: number, maxMistak
 }
 
 function App() {
-  const { word, attempts, allowedTries, foundLetters, hasWon, guessLetter, resetGame, streak } = useGame()
+  const { word, attempts, allowedTries, foundLetters, hasWon, guessLetter, resetGame, streak, isApiDown } = useGame()
 
   const mistakes = attempts;
   const maxMistakes = allowedTries;
@@ -125,6 +125,11 @@ function App() {
 
       <div className="app-container">
         <h1>Le Pendu</h1>
+        {isApiDown && (
+          <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.2)', border: '1px solid #f59e0b', color: '#fcd34d', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', textAlign: 'center', fontWeight: '500', width: '100%', maxWidth: '48rem', backdropFilter: 'blur(8px)' }}>
+            ⚠️ L'API est actuellement indisponible. Un mot de secours a été chargé.
+          </div>
+        )}
         <div className="glass-panel" style={{ width: '100%', maxWidth: '48rem' }}>
           <div className="stats-container">
             <div className="stat-badge">
@@ -186,7 +191,7 @@ function App() {
                         key={key}
                         className={`key ${isCorrect ? 'correct' : ''} ${isIncorrect ? 'incorrect' : ''}`}
                         onClick={() => guessLetter(key)}
-                        disabled={isGuessed}
+                        disabled={isGuessed || !word}
                       >
                         {key}
                       </button>

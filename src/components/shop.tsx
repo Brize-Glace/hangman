@@ -4,7 +4,7 @@ import { useStreak } from '../contexts/StreakContext'
 import { SHOP_ITEMS } from '../constants/shop'
 
 export function Shop() {
-  const { streak, word, foundLetters, guessLetter, allowedTries, shieldActive, activateShield } = useGame();
+  const { streak, word, foundLetters, guessLetter, shieldActive, activateShield } = useGame();
   const { buyItem, userItems, useItem } = useStreak();
 
   const handleUseHint = () => {
